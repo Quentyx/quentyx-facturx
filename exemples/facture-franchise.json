@@ -1,0 +1,72 @@
+{
+  "type": "facture",
+  "date_emission": "2026-10-01",
+  "periode": {
+    "debut": "2026-10-01",
+    "fin": "2026-10-31"
+  },
+  "reference_unique": "square-paiement-exemple-0001",
+  "vendeur": {
+    "nom": "Vendeur Exemple",
+    "mention_legale": "EI",
+    "siren": "123456789",
+    "id_fiscal": "123456789",
+    "courriel": "facturation@exemple.fr",
+    "adresse": {
+      "ligne1": "1 rue de l Exemple",
+      "code_postal": "44000",
+      "ville": "Nantes",
+      "pays": "FR"
+    }
+  },
+  "acheteur": {
+    "nom": "Client Exemple SAS",
+    "siren": "987654321",
+    "adresse": {
+      "ligne1": "2 avenue du Client",
+      "code_postal": "75001",
+      "ville": "Paris",
+      "pays": "FR"
+    },
+    "adresse_electronique": {
+      "valeur": "987654321",
+      "schema": "0225"
+    }
+  },
+  "lignes": [
+    {
+      "libelle": "Abonnement mensuel, surveillance de 25 identifiants",
+      "description": "Contrôle quotidien, alertes par courriel, historique daté exportable.",
+      "quantite": 1,
+      "unite": "C62",
+      "prix_unitaire_ht": "39",
+      "tva": {
+        "categorie": "E"
+      }
+    }
+  ],
+  "exonerations": {
+    "E": {
+      "motif": "TVA non applicable, art. 293 B du CGI"
+    }
+  },
+  "paiement": {
+    "moyen": "carte",
+    "deja_paye": "39",
+    "reference": "square-paiement-exemple-0001"
+  },
+  "notes": [
+    {
+      "code": "PMD",
+      "texte": "En cas de retard de paiement, pénalités au taux de trois fois le taux d’intérêt légal."
+    },
+    {
+      "code": "PMT",
+      "texte": "Indemnité forfaitaire pour frais de recouvrement en cas de retard : 40 €."
+    },
+    {
+      "code": "AAB",
+      "texte": "Pas d’escompte pour paiement anticipé."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "quentyx-facturx",
+  "version": "0.3.0",
+  "description": "French e-invoices (Factur-X EN 16931, PDF/A-3) in Node.js with zero dependencies: produce, validate and read Factur-X, CII and UBL invoices.",
+  "keywords": ["factur-x", "facturx", "zugferd", "en16931", "e-invoicing", "einvoice", "facture-electronique", "pdf-a-3", "cii", "ubl", "invoice", "france"],
+  "author": "Anthony Renard",
+  "license": "LGPL-3.0-only",
+  "homepage": "https://github.com/Quentyx/quentyx-facturx#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Quentyx/quentyx-facturx.git" },
+  "bugs": { "url": "https://github.com/Quentyx/quentyx-facturx/issues" },
+  "main": "evoyx.js",
+  "bin": { "quentyx-facturx": "cli.js" },
+  "engines": { "node": ">=18" },
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "test": "node --test test/*.test.js $(ls pro/test/*.test.js 2>/dev/null)"
+  },
+  "files": [
+    "evoyx.js",
+    "cli.js",
+    "lib/",
+    "ressources/",
+    "README.md",
+    "README.fr.md",
+    "COPYING",
+    "COPYING.LESSER"
+  ]
+}
