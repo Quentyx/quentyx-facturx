@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-License-Identifier: LGPL-3.0-only
+// Copyright (C) 2026 Anthony Renard
 'use strict';
 /*
  * Ligne de commande de quentyx-facturx. Sortie JSON sur stdout, pour un humain

@@ -183,6 +183,12 @@ answers with the code `PALIER_PRO`. Pro purchases open soon.
 - EXTENDED and EXTENDED-CTC-FR profiles: not produced yet.
 - Transmission to a certified platform: outside the engine for now.
 
+## Contributions
+
+I do not accept contributions: no pull requests, patches, code, feature proposals or partnership
+offers. Being the sole author is what lets me offer both licences. You can report a bug in the issues,
+and I fix it myself (see [`CONTRIBUTING.md`](CONTRIBUTING.md)).
+
 ## Licence
 
 The free engine is licensed under the **GNU LGPL-3.0** ([`COPYING.LESSER`](COPYING.LESSER), which

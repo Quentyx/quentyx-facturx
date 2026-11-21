@@ -181,6 +181,13 @@ répond avec le code `PALIER_PRO`. Les achats du Pro ouvrent prochainement.
 - Profils EXTENDED et EXTENDED-CTC-FR : non produits pour l’instant.
 - Transmission à une plateforme agréée : hors du moteur pour l’instant.
 
+## Contributions
+
+Je n’accepte pas de contributions : ni pull request, ni correctif, ni code, ni proposition de
+fonctionnalité, ni offre de partenariat. C’est parce que j’en suis le seul auteur que je peux proposer
+les deux licences. Vous pouvez signaler un défaut dans les issues, je le corrige moi-même (voir
+[`CONTRIBUTING.md`](CONTRIBUTING.md)).
+
 ## Licence
 
 Le palier Libre est sous **GNU LGPL-3.0** ([`COPYING.LESSER`](COPYING.LESSER), qui complète

@@ -14,7 +14,14 @@
     "cii",
     "ubl",
     "invoice",
-    "france"
+    "france",
+    "zero-dependency",
+    "nodejs",
+    "e-invoice",
+    "facture",
+    "mcp",
+    "mcp-server",
+    "pdfa"
   ],
   "author": "Anthony Renard",
   "license": "LGPL-3.0-only",
@@ -45,6 +52,7 @@
     "README.md",
     "README.fr.md",
     "COPYING",
-    "COPYING.LESSER"
+    "COPYING.LESSER",
+    "CONTRIBUTING.md"
   ]
 }
