@@ -10,6 +10,7 @@
  *   node cli.js emettre  facture.json --registre DOSSIER [--serie FAC] --sortie DOSSIER [--theme theme.json]
  *   node cli.js lister   --registre DOSSIER [--serie FAC]
  *   node cli.js lire     facture.pdf|facture.xml [--avec-xml]
+ *   node cli.js mcp      serveur MCP sur stdio (dossier de travail : FACTURX_DOSSIER, sinon le dossier courant)
  */
 const fs = require('fs');
 const path = require('path');
@@ -41,6 +42,7 @@ async function principal() {
   const a = args(process.argv.slice(2));
   const cmd = a._[0];
   const theme = a.theme ? lireJson(a.theme) : undefined;
+  if (cmd === 'mcp') return require('./lib/mcp').demarrer();
   if (cmd === 'catalogue') return sortir(fx.CATALOGUE);
   if (cmd === 'valider') {
     const r = fx.valider(lireJson(a._[1]), { brouillon: !!a.brouillon });
@@ -70,7 +72,7 @@ async function principal() {
     const reg = await fx.ouvrirRegistre(a.registre, { serie: a.serie || 'FAC' });
     try { return sortir(await reg.lister()); } finally { await reg.fermer(); }
   }
-  process.stderr.write('commandes : catalogue, valider, produire, lire, emettre, lister (voir l en-tete de cli.js)\n');
+  process.stderr.write('commandes : catalogue, valider, produire, lire, emettre, lister, mcp (voir l en-tete de cli.js)\n');
   process.exit(1);
 }
 

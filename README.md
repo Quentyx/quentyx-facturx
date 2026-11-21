@@ -9,6 +9,7 @@ with the EN 16931 XML attached for machines.
 - **Produce** an invoice or a credit note as Factur-X EN 16931, PDF/A-3B.
 - **Read** an incoming invoice: Factur-X, CII or UBL 2.1.
 - **Validate** an invoice against EN 16931 business rules and French legal requirements before you issue it.
+- **Agents**: a built-in MCP server, so an AI assistant can invoice for you (see [MCP](#mcp-server-for-ai-agents)).
 - **Zero dependencies**: the PDF, the fonts, the XML and the amounts are all written by the engine itself.
 - **Proven** by the official Mustang and veraPDF validators (see [Proof](#proof)).
 
@@ -106,11 +107,58 @@ npx quentyx-facturx lire     incoming.pdf
 Every command answers in JSON. `catalogue` describes every operation and every field: it is the
 page to give a language model that has to use the engine.
 
+## MCP server for AI agents
+
+The engine ships its own MCP server, so an assistant such as Claude, Cursor or any MCP client can
+produce, check and read invoices for you, from a plain sentence.
+
+```bash
+npx -y quentyx-facturx mcp
+```
+
+With Claude Code:
+
+```bash
+claude mcp add facturx -- npx -y quentyx-facturx mcp
+```
+
+With Claude Desktop, Cursor or any client that reads an `mcpServers` file:
+
+```json
+{
+  "mcpServers": {
+    "facturx": {
+      "command": "npx",
+      "args": ["-y", "quentyx-facturx", "mcp"],
+      "env": { "FACTURX_DOSSIER": "/path/to/my/invoices" }
+    }
+  }
+}
+```
+
+| Tool | What it does |
+|---|---|
+| `facturx_catalogue` | The full contract: fields, codes, rules |
+| `facturx_valider` | Checks an invoice and computes its totals, writes nothing |
+| `facturx_produire` | Writes the Factur-X PDF and its XML into the working folder |
+| `facturx_lire` | Reads an incoming invoice (Factur-X, CII, UBL) and recomputes its totals |
+| `facturx_xml` | Returns the EN 16931 XML only |
+
+The server only reads and writes inside its working folder (`FACTURX_DOSSIER`, otherwise the folder
+it starts in), never overwrites a file unless asked to, and refuses an invalid invoice before
+writing anything. With Pro installed, three more tools appear: `facturx_emettre` (numbered in the
+register), `facturx_lister` and `facturx_relire`.
+
+I tested it with a real model: from a single sentence (seller, client, three days at €400), it
+validated, produced, then reread the PDF and found no gap between the written and the recomputed
+totals.
+
 ## Free and Pro
 
 | | Free (Libre) | Pro |
 |---|---|---|
 | Produce, validate, read (Factur-X, CII, UBL) | ✓ | ✓ |
+| MCP server for AI agents | ✓ | ✓ |
 | **Register**: continuous numbering with no gaps and no duplicates, even across processes | | ✓ |
 | One invoice per payment (`reference_unique`) | | ✓ |
 | Audit trail of every issued invoice | | ✓ |

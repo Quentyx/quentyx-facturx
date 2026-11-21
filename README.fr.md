@@ -9,6 +9,7 @@ un PDF/A-3 lisible par un humain, avec le XML au profil EN 16931 joint, lisible 
 - **Produire** une facture ou un avoir en Factur-X EN 16931, PDF/A-3B.
 - **Lire** une facture reçue : Factur-X, CII ou UBL 2.1.
 - **Valider** une facture contre les règles EN 16931 et les obligations françaises, avant de l’émettre.
+- **Agents** : un serveur MCP intégré, pour qu’un assistant IA facture à votre place (voir [MCP](#serveur-mcp-pour-les-agents-ia)).
 - **Zéro dépendance** : le PDF, les polices, le XML et les montants sont écrits par le moteur lui-même.
 - **Prouvé** par les validateurs officiels Mustang et veraPDF (voir [Preuves](#preuves)).
 
@@ -104,11 +105,58 @@ npx quentyx-facturx lire     facture-recue.pdf
 Toutes les commandes répondent en JSON. `catalogue` décrit chaque opération et chaque champ :
 c’est la page à donner à un modèle de langue qui doit se servir du moteur.
 
+## Serveur MCP pour les agents IA
+
+Le moteur embarque son propre serveur MCP : un assistant comme Claude, Cursor ou tout client MCP peut
+produire, contrôler et lire vos factures à partir d’une simple phrase.
+
+```bash
+npx -y quentyx-facturx mcp
+```
+
+Avec Claude Code :
+
+```bash
+claude mcp add facturx -- npx -y quentyx-facturx mcp
+```
+
+Avec Claude Desktop, Cursor ou tout client qui lit un fichier `mcpServers` :
+
+```json
+{
+  "mcpServers": {
+    "facturx": {
+      "command": "npx",
+      "args": ["-y", "quentyx-facturx", "mcp"],
+      "env": { "FACTURX_DOSSIER": "/chemin/vers/mes/factures" }
+    }
+  }
+}
+```
+
+| Outil | Ce qu’il fait |
+|---|---|
+| `facturx_catalogue` | Le contrat complet : champs, codes, règles |
+| `facturx_valider` | Contrôle une facture et calcule ses totaux, sans rien écrire |
+| `facturx_produire` | Écrit le PDF Factur-X et son XML dans le dossier de travail |
+| `facturx_lire` | Lit une facture reçue (Factur-X, CII, UBL) et recalcule ses totaux |
+| `facturx_xml` | Rend le XML EN 16931 seul |
+
+Le serveur ne lit et n’écrit que dans son dossier de travail (`FACTURX_DOSSIER`, sinon le dossier
+où il démarre), n’écrase jamais un fichier sans qu’on le lui demande, et refuse une facture
+invalide avant d’écrire quoi que ce soit. Avec le Pro installé, trois outils de plus apparaissent :
+`facturx_emettre` (numérotée dans le registre), `facturx_lister` et `facturx_relire`.
+
+Je l’ai essayé avec un vrai modèle : à partir d’une seule phrase (vendeur, client, trois jours à
+400 €), il a validé, produit, puis relu le PDF sans trouver le moindre écart entre les totaux écrits
+et les totaux recalculés.
+
 ## Libre et Pro
 
 | | Libre | Pro |
 |---|---|---|
 | Produire, valider, lire (Factur-X, CII, UBL) | ✓ | ✓ |
+| Serveur MCP pour les agents IA | ✓ | ✓ |
 | **Registre** : numérotation continue sans trou ni doublon, même entre plusieurs processus | | ✓ |
 | Une seule facture par paiement (`reference_unique`) | | ✓ |
 | Piste d’audit de chaque facture émise | | ✓ |
