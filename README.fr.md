@@ -160,6 +160,7 @@ et les totaux recalculés.
 | **Registre** : numérotation continue sans trou ni doublon, même entre plusieurs processus | | ✓ |
 | Une seule facture par paiement (`reference_unique`) | | ✓ |
 | Piste d’audit de chaque facture émise | | ✓ |
+| **Le Libre sans les obligations de la LGPL** : l’intégrer dans le logiciel que vous livrez, garder vos modifications fermées | | ✓ |
 | Prochainement : profil EXTENDED-CTC-FR, connecteurs aux plateformes agréées, archivage | | ✓ |
 | Licence | LGPL-3.0 | commerciale |
 | Prix | gratuit | **15 € par mois ou 150 € par an**, factures illimitées, une entreprise |
@@ -193,6 +194,7 @@ les deux licences. Vous pouvez signaler un défaut dans les issues, je le corrig
 Le palier Libre est sous **GNU LGPL-3.0** ([`COPYING.LESSER`](COPYING.LESSER), qui complète
 [`COPYING`](COPYING)) : vous pouvez l’utiliser dans un logiciel fermé ; si vous modifiez le moteur
 lui-même et le distribuez, vos modifications restent libres. Le palier Pro est sous licence
-commerciale.
+commerciale, et elle couvre aussi le Libre pour qui la préfère à la LGPL : vous pouvez alors
+l’intégrer dans le logiciel que vous livrez à vos clients et garder vos modifications fermées.
 
 © 2026 Anthony Renard

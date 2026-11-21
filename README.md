@@ -162,6 +162,7 @@ totals.
 | **Register**: continuous numbering with no gaps and no duplicates, even across processes | | ✓ |
 | One invoice per payment (`reference_unique`) | | ✓ |
 | Audit trail of every issued invoice | | ✓ |
+| **Free engine without the LGPL obligations**: ship it inside your product, keep your changes closed | | ✓ |
 | Coming: EXTENDED-CTC-FR profile, connectors to certified platforms, archiving | | ✓ |
 | Licence | LGPL-3.0 | commercial |
 | Price | free | **€15 per month or €150 per year**, unlimited invoices, one company |
@@ -193,6 +194,8 @@ and I fix it myself (see [`CONTRIBUTING.md`](CONTRIBUTING.md)).
 
 The free engine is licensed under the **GNU LGPL-3.0** ([`COPYING.LESSER`](COPYING.LESSER), which
 supplements [`COPYING`](COPYING)): you can use it in closed-source software; if you modify the
-engine itself and distribute it, your changes stay free. Pro is under a commercial licence.
+engine itself and distribute it, your changes stay free. Pro is under a commercial licence, which
+also covers the free engine for whoever prefers it to the LGPL: you can then ship it inside the
+software you deliver to your clients and keep your changes closed.
 
 © 2026 Anthony Renard
