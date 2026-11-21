@@ -34,6 +34,7 @@ const { pdf, avertissements } = fx.produire({
   numero: 'F-2026-0001',
   date_emission: '2026-11-21',
   date_echeance: '2026-12-21',
+  cadre_facturation: 'S1', // BT-23: S1 services, B1 goods, M1 mixed
   vendeur: {
     nom: 'Mon Entreprise', siren: '123456789', tva: 'FR12123456789',
     courriel: 'factures@mon-entreprise.fr',
@@ -146,8 +147,10 @@ With Claude Desktop, Cursor or any client that reads an `mcpServers` file:
 
 The server only reads and writes inside its working folder (`FACTURX_DOSSIER`, otherwise the folder
 it starts in), never overwrites a file unless asked to, and refuses an invalid invoice before
-writing anything. With Pro installed, three more tools appear: `facturx_emettre` (numbered in the
-register), `facturx_lister` and `facturx_relire`.
+writing anything. With Pro installed, the registry tools appear (`facturx_emettre`, numbered in the
+register, `facturx_lister`, `facturx_relire`), and the certified platform tools: `facturx_plateforme_envoyer`,
+`_suivi`, `_factures`, `_lire`, `_statuer`, `_annuaire`, `_controler`, `_ereporting` and `_compte`. The
+ones that transmit are flagged as such, so the assistant asks you before sending anything.
 
 I tested it with a real model: from a single sentence (seller, client, three days at €400), it
 validated, produced, then reread the PDF and found no gap between the written and the recomputed
@@ -163,12 +166,30 @@ totals.
 | One invoice per payment (`reference_unique`) | | ✓ |
 | Audit trail of every issued invoice | | ✓ |
 | **Free engine without the LGPL obligations**: ship it inside your product, keep your changes closed | | ✓ |
-| Coming: EXTENDED-CTC-FR profile, connectors to certified platforms, archiving | | ✓ |
+| **Native Super PDP connector**: send, receive, lifecycle statuses, directory, platform check, e-reporting | | ✓ |
+| Coming: EXTENDED-CTC-FR profile, other certified platforms (AFNOR XP Z12-013), archiving | | ✓ |
 | Licence | LGPL-3.0 | commercial |
 | Price | free | **€15 per month or €150 per year**, unlimited invoices, one company |
 
 Pro plugs into the free engine without changing a line of your code: without it, a Pro operation
 answers with the code `PALIER_PRO`. Pro purchases open soon.
+
+## Certified platform (Pro)
+
+Pro sends your invoices through Super PDP, a certified platform of the French reform, and brings
+the answers back: lifecycle statuses, received invoices, the national directory, e-reporting.
+
+```js
+const p = await fx.ouvrirPlateforme({ environnement: 'production' }); // FACTURX_SUPERPDP_CLIENT_ID / _SECRET
+const { facture } = await p.envoyer(invoice, { reference: 'order-42' });
+const { etat } = await p.evenements(facture.id); // deposee, emise, recue, approuvee, encaissee...
+const recues = await p.factures({ sens: 'recues' });
+```
+
+Nothing leaves if the invoice is not compliant, if its billing framework (BT-23) is missing, or if
+the declared environment differs from the account: a sandbox setup cannot send a real invoice.
+I test it on Super PDP's sandbox: sent, followed until it is made available to the client, then read
+back with no gap.
 
 ## Proof
 
@@ -182,7 +203,7 @@ answers with the code `PALIER_PRO`. Pro purchases open soon.
 
 - Document-level allowances and charges: not supported when producing, reported when reading.
 - EXTENDED and EXTENDED-CTC-FR profiles: not produced yet.
-- Transmission to a certified platform: outside the engine for now.
+- Transmission to a certified platform: Pro only, through Super PDP for now.
 
 ## Contributions
 

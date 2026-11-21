@@ -1,6 +1,6 @@
 {
   "name": "quentyx-facturx",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "French e-invoices (Factur-X EN 16931, PDF/A-3) in Node.js with zero dependencies: produce, validate and read Factur-X, CII and UBL invoices.",
   "keywords": [
     "factur-x",
@@ -21,7 +21,11 @@
     "facture",
     "mcp",
     "mcp-server",
-    "pdfa"
+    "pdfa",
+    "model-context-protocol",
+    "super-pdp",
+    "pdp",
+    "plateforme-agreee"
   ],
   "author": "Anthony Renard",
   "license": "LGPL-3.0-only",

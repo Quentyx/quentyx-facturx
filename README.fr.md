@@ -31,6 +31,7 @@ const { pdf, avertissements } = fx.produire({
   numero: 'F-2026-0001',
   date_emission: '2026-11-21',
   date_echeance: '2026-12-21',
+  cadre_facturation: 'S1', // BT-23 : S1 services, B1 biens, M1 mixte
   vendeur: {
     nom: 'Mon Entreprise', siren: '123456789', tva: 'FR12123456789',
     courriel: 'factures@mon-entreprise.fr',
@@ -144,8 +145,11 @@ Avec Claude Desktop, Cursor ou tout client qui lit un fichier `mcpServers` :
 
 Le serveur ne lit et n’écrit que dans son dossier de travail (`FACTURX_DOSSIER`, sinon le dossier
 où il démarre), n’écrase jamais un fichier sans qu’on le lui demande, et refuse une facture
-invalide avant d’écrire quoi que ce soit. Avec le Pro installé, trois outils de plus apparaissent :
-`facturx_emettre` (numérotée dans le registre), `facturx_lister` et `facturx_relire`.
+invalide avant d’écrire quoi que ce soit. Avec le Pro installé, les outils du registre apparaissent
+(`facturx_emettre`, numérotée dans le registre, `facturx_lister`, `facturx_relire`), et ceux de la
+plateforme agréée : `facturx_plateforme_envoyer`, `_suivi`, `_factures`, `_lire`, `_statuer`,
+`_annuaire`, `_controler`, `_ereporting` et `_compte`. Ceux qui transmettent sont signalés comme tels :
+l’assistant vous demande votre accord avant d’envoyer quoi que ce soit.
 
 Je l’ai essayé avec un vrai modèle : à partir d’une seule phrase (vendeur, client, trois jours à
 400 €), il a validé, produit, puis relu le PDF sans trouver le moindre écart entre les totaux écrits
@@ -161,12 +165,30 @@ et les totaux recalculés.
 | Une seule facture par paiement (`reference_unique`) | | ✓ |
 | Piste d’audit de chaque facture émise | | ✓ |
 | **Le Libre sans les obligations de la LGPL** : l’intégrer dans le logiciel que vous livrez, garder vos modifications fermées | | ✓ |
-| Prochainement : profil EXTENDED-CTC-FR, connecteurs aux plateformes agréées, archivage | | ✓ |
+| **Connecteur natif Super PDP** : envoi, réception, statuts du cycle de vie, annuaire, contrôle par la plateforme, e-reporting | | ✓ |
+| Prochainement : profil EXTENDED-CTC-FR, autres plateformes agréées (AFNOR XP Z12-013), archivage | | ✓ |
 | Licence | LGPL-3.0 | commerciale |
 | Prix | gratuit | **15 € par mois ou 150 € par an**, factures illimitées, une entreprise |
 
 Le Pro se branche sur le Libre sans changer une ligne de votre code : sans lui, une opération Pro
 répond avec le code `PALIER_PRO`. Les achats du Pro ouvrent prochainement.
+
+## Plateforme agréée (Pro)
+
+Le Pro envoie vos factures par Super PDP, plateforme agréée de la réforme, et en rapporte les
+réponses : statuts du cycle de vie, factures reçues, annuaire national, e-reporting.
+
+```js
+const p = await fx.ouvrirPlateforme({ environnement: 'production' }); // FACTURX_SUPERPDP_CLIENT_ID / _SECRET
+const { facture } = await p.envoyer(invoice, { reference: 'order-42' });
+const { etat } = await p.evenements(facture.id); // deposee, emise, recue, approuvee, encaissee…
+const recues = await p.factures({ sens: 'recues' });
+```
+
+Rien ne part si la facture n’est pas conforme, si son cadre de facturation (BT-23) manque, ou si
+l’environnement déclaré n’est pas celui du compte : une installation d’essai ne peut pas envoyer une
+vraie facture. Je l’éprouve sur le bac à sable de Super PDP : envoyée, suivie jusqu’à sa mise à
+disposition chez le client, puis relue sans aucun écart.
 
 ## Preuves
 
@@ -180,7 +202,7 @@ répond avec le code `PALIER_PRO`. Les achats du Pro ouvrent prochainement.
 
 - Remises et frais au niveau du document : non pris en charge à la production, signalés à la lecture.
 - Profils EXTENDED et EXTENDED-CTC-FR : non produits pour l’instant.
-- Transmission à une plateforme agréée : hors du moteur pour l’instant.
+- Transmission à une plateforme agréée : dans le Pro seulement, par Super PDP pour l’instant.
 
 ## Contributions
 

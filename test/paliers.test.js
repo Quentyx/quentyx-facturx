@@ -17,28 +17,30 @@ const SONDE = `
   const fx = require('./evoyx');
   const { base } = require('./test/_facture');
   const p = fx.produire(base());
-  const fin = (code) => {
+  const fin = (code, plateforme) => {
     const charges = Object.keys(require.cache);
     console.log(JSON.stringify({
       pdf: p.pdf.length > 1000, xml: p.xml.includes(fx.CATALOGUE.norme.profil), lu: fx.lire(p.pdf).ok,
       pro: fx.CATALOGUE.paliers.pro.present, disponible: fx.CATALOGUE.operations['registre.emettre'].disponible,
-      code, journal: charges.some((f) => f.includes('quentyx-journal')),
+      code, plateforme, journal: charges.some((f) => f.includes('quentyx-journal')),
       dossierPro: charges.some((f) => f.includes('/pro/')),
     }));
   };
   const d = require('os').tmpdir() + '/fx-sonde-' + process.pid;
   const nettoyer = () => require('fs').rmSync(d, { recursive: true, force: true });
-  fx.ouvrirRegistre(d).then((r) => r.fermer().then(() => { nettoyer(); fin('ouvert'); }), (e) => { nettoyer(); fin(e.code); });
+  const pf = (code) => fx.ouvrirPlateforme({ environnement: 'bac_a_sable', client_id: 'a', client_secret: 'b' })
+    .then((x) => fin(code, typeof x.envoyer === 'function' ? 'ouvert' : 'incomplet'), (e) => fin(code, e.code));
+  fx.ouvrirRegistre(d).then((r) => r.fermer().then(() => { nettoyer(); pf('ouvert'); }), (e) => { nettoyer(); pf(e.code); });
 `;
 
 test('le Libre tient seul : il produit une facture sans le Pro ni quentyx-journal', () => {
   const r = enfant(SONDE, { QUENTYX_FACTURX_LIBRE: '1' });
-  assert.deepStrictEqual(r, { pdf: true, xml: true, lu: true, pro: false, disponible: false, code: 'PALIER_PRO', journal: false, dossierPro: false });
+  assert.deepStrictEqual(r, { pdf: true, xml: true, lu: true, pro: false, disponible: false, code: 'PALIER_PRO', plateforme: 'PALIER_PRO', journal: false, dossierPro: false });
 });
 
 test('le Pro se branche par la couture, sans changer le contrat', () => {
   const r = enfant(SONDE);
-  assert.deepStrictEqual(r, { pdf: true, xml: true, lu: true, pro: true, disponible: true, code: 'ouvert', journal: true, dossierPro: true });
+  assert.deepStrictEqual(r, { pdf: true, xml: true, lu: true, pro: true, disponible: true, code: 'ouvert', plateforme: 'ouvert', journal: true, dossierPro: true });
 });
 
 test('le paquet publie n emporte jamais le Pro', () => {

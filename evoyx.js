@@ -67,8 +67,9 @@ function versJson(v) {
 }
 
 // Le Pro recoit l API du Libre, jamais un chemin vers ses fichiers.
-const pro = paliers.charger({ analyser: facture.analyser, valider, produire, versXml, VERSION });
+const pro = paliers.charger({ analyser: facture.analyser, valider, produire, versXml, lire, VERSION });
 const ouvrirRegistre = pro.operations.ouvrirRegistre || paliers.absente('ouvrirRegistre');
+const ouvrirPlateforme = pro.operations.ouvrirPlateforme || paliers.absente('ouvrirPlateforme');
 const PRO = { palier: 'pro', disponible: !!pro.operations.ouvrirRegistre };
 
 const CATALOGUE = {
@@ -85,6 +86,9 @@ const CATALOGUE = {
     'registre.emettre': { ...PRO, entree: 'facture sans numero, reference_unique facultative', rend: '{ numero, facture, deja }', effet: 'attribue le numero suivant et consigne la facture dans le journal' },
     'registre.lister': { ...PRO, rend: '[{ numero, date, reference, total_ttc_centimes, seq }]', effet: 'aucun' },
     'registre.relire': { ...PRO, entree: 'numero', rend: 'la facture emise, telle que consignee', effet: 'aucun' },
+    plateforme: { ...PRO, entree: 'ouvrirPlateforme({ fournisseur: superpdp, environnement: bac_a_sable|production, client_id, client_secret }), sinon FACTURX_SUPERPDP_ENV, FACTURX_SUPERPDP_CLIENT_ID, FACTURX_SUPERPDP_CLIENT_SECRET',
+      rend: '{ compte, adresses, annuaire(siren), entreprises, controler, envoyer(facture|fichier, { reference, regle }), factures({ sens emises|recues, mois, apres, limite }), detail, fichier(id, format), lire(id), evenements(id), statuer(id, statut, { motif, note, montant }), ereporting { apercu, lister, lire, declarer }, identitesEssai, factureEssai }',
+      effet: 'envoyer, statuer et ereporting.declarer transmettent a la plateforme agreee ; avant, l environnement reel du compte doit etre celui declare, et le Libre relit la facture : une facture non conforme ne part pas' },
   },
   facture: {
     type: 'facture | avoir',
@@ -106,20 +110,20 @@ const CATALOGUE = {
   paliers: {
     libre: 'valider, produire, versXml, lire : verifier, produire et lire une facture EN 16931, seul, sans autre moteur',
     pro: { present: pro.present, nom: pro.nom || 'quentyx-facturx-pro', version: pro.version || null,
-      role: 'registre : numerotation continue et chronologique sans trou ni doublon, une facture par paiement, piste d audit',
+      role: 'registre : numerotation continue et chronologique sans trou ni doublon, une facture par paiement, piste d audit ; plateforme agreee : Super PDP (envoi, reception, cycle de vie, annuaire, controle, e-reporting)',
       absent: 'une operation Pro absente refuse avec le code PALIER_PRO' },
   },
   montants: 'nombres ou chaines, 2 decimales pour un montant, 4 pour un prix, une quantite ou un taux. Un flottant approximatif est refuse, jamais arrondi en silence.',
   limites: [
     'remises et frais au niveau du document non pris en charge : a la lecture, ils sont signales et laissent un ecart',
     'profils EXTENDED et EXTENDED-CTC-FR non produits',
-    'transmission a une plateforme agreee hors du moteur',
+    'transmission a une plateforme agreee : palier Pro seulement, premier pilote Super PDP',
     'polices TrueType seulement, PNG 8 bits seulement',
   ],
 };
 
 module.exports = {
   valider, produire, versXml, versJson, lire,
-  ouvrirRegistre,
+  ouvrirRegistre, ouvrirPlateforme,
   CATALOGUE, NIVEAU, VERSION,
 };
